@@ -13,6 +13,10 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
+app.get('/ai', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'ai.html'));
+});
+
 app.listen(port, () => {
     console.log(`App listening on port ${port}`);
 });
