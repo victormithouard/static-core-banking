@@ -17,6 +17,11 @@ app.get('/ai', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'ai.html'));
 });
 
+app.get('/composable-evolution', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'composable-evolution.html'));
+});
+
+
 app.listen(port, () => {
     console.log(`App listening on port ${port}`);
 });

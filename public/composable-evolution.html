@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Re-Bundling: Evolving Composable Banking</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <!-- Chosen Palette: Emerald/Teal (Growth/Evolution) with Slate/Zinc (Stability) -->
+    <!-- Application Structure Plan:
+         1. Executive Overview: The thesis of "Re-bundling". The shift from DIY Legos to Lego Kits.
+         2. Evolutionary Lanes: Visualizing the maturing of the stack (Raw API -> Managed Solution).
+         3. Player Atlas: Categorized by 'Pure Play', 'Vertical Specialists', and 'Hybrid Incumbents'.
+         4. Impact Matrices: 'Integration Burden' chart and 'Feature Depth' analysis.
+         5. Qualitative Deep Dives: The "Country Model" Solution, The Tier 2 Gap, and AI localization.
+    -->
+    <style>
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background-color: #f0fdfa;
+            color: #0f172a;
+        }
+
+        /* Lane Styling */
+        .lane-card {
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border-bottom: 4px solid transparent;
+        }
+
+        .lane-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .lane-card.active {
+            border-bottom-color: #0d9488;
+            background-color: #fff;
+            border-top: 1px solid #ccfbf1;
+        }
+
+        /* Tab Styling */
+        .tab-btn {
+            transition: all 0.2s ease;
+            border-left: 4px solid transparent;
+        }
+
+        .tab-btn.active {
+            border-color: #0d9488;
+            background-color: #ccfbf1;
+            color: #115e59;
+            font-weight: 600;
+        }
+
+        /* Chart Container */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+
+        /* AI Drawer */
+        .ai-drawer {
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transform: translateX(100%);
+        }
+
+        .ai-drawer.open {
+            transform: translateX(0);
+        }
+
+        /* Markdown Overrides */
+        .prose strong {
+            color: #115e59;
+        }
+
+        .prose ul {
+            list-style-type: square;
+            padding-left: 1.25em;
+            color: #334155;
+        }
+    </style>
+</head>
+
+<body class="text-slate-800">
+
+    <!-- Header -->
+    <header class="bg-white border-b border-teal-100 sticky top-0 z-50 shadow-sm backdrop-blur-md bg-opacity-95">
+        <div class="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center">
+                <div>
+                    <h1 class="text-2xl font-bold text-slate-900 tracking-tight flex items-center gap-2">
+                        THE <span class="text-teal-600">RE-BUNDLING</span>
+                    </h1>
+                    <p class="text-xs text-slate-500 font-medium">EVOLUTION OF COMPOSABLE BANKING • STRATEGIC OUTLOOK
+                    </p>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="toggleAIChat()"
+                        class="bg-teal-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-teal-700 transition flex items-center gap-2 shadow-sm font-medium">
+                        <span>🧩</span> Solution Architect
+                    </button>
+                    <button onclick="scrollToSection('watchlist')"
+                        class="bg-slate-800 text-white px-4 py-2 rounded-lg text-sm hover:bg-slate-700 transition font-medium">Gap
+                        Analysis</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-12 relative">
+
+        <!-- Executive Overview -->
+        <section class="bg-white rounded-xl p-8 shadow-sm border border-teal-100 relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-32 h-32 bg-teal-50 rounded-full -mr-16 -mt-16 z-0"></div>
+            <div class="relative z-10">
+                <h2 class="text-lg font-bold mb-3 uppercase tracking-wide text-teal-800 flex items-center gap-2">
+                    Executive Overview: The "Integration Cliff"
+                </h2>
+                <p class="text-slate-700 leading-relaxed mb-6 max-w-4xl">
+                    Composable Banking (Mambu, Thought Machine) won the Neobanks by offering "Raw APIs." But to
+                    penetrate the massive <strong>Tier 2 & Tier 3 market</strong>, they must pivot. These banks lack the
+                    engineering armies to assemble lego blocks. The evolution is towards <strong>"Pre-Composed Country
+                        Packs"</strong>—pre-integrated bundles of Ledger + Compliance + Payments logic specific to a
+                    market (e.g., "French Mortgage Engine" vs. just "Loan API").
+                </p>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-sm">
+                    <div class="bg-teal-50 p-4 rounded-lg border border-teal-200">
+                        <span class="font-bold block text-teal-900 mb-1">Current State (Lego Blocks)</span>
+                        High flexibility, but requires massive internal IT to connect the Ledger to the Regulatory
+                        engines. High "Integration Tax".
+                    </div>
+                    <div class="bg-white p-4 rounded-lg border border-teal-200 shadow-sm">
+                        <span class="font-bold block text-teal-900 mb-1">Target State (Lego Kits)</span>
+                        Vendors offer "Reference Architectures" with pre-certified partners. "80% finished out of the
+                        box."
+                    </div>
+                    <div class="bg-teal-50 p-4 rounded-lg border border-teal-200">
+                        <span class="font-bold block text-teal-900 mb-1">The Catalyst</span>
+                        GenAI allows vendors to generate "Country Connectors" and localization code 10x faster, lowering
+                        the cost of entering new markets.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Evolutionary Lanes -->
+        <section>
+            <div class="mb-4">
+                <h2 class="text-2xl font-bold text-slate-900">1. The Evolutionary Stack</h2>
+                <p class="text-slate-600 mt-2 max-w-3xl text-sm">
+                    How composable cores are moving "up the stack" to capture more value and solve the complexity
+                    problem.
+                </p>
+            </div>
+
+            <!-- Interactive Lane Diagram -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6 select-none" id="lane-container">
+                <!-- Generated by JS -->
+            </div>
+
+            <div id="lane-details"
+                class="bg-white p-6 rounded-xl shadow-sm border border-teal-200 min-h-[160px] transition-all relative">
+                <h3 class="font-bold text-xl text-slate-900" id="lane-title">Select a Stage</h3>
+                <p class="text-slate-600 mt-2 text-sm md:text-base" id="lane-desc">Interact with the timeline above.</p>
+                <div class="mt-4 pt-4 border-t border-slate-100 flex justify-between items-center">
+                    <div>
+                        <span class="text-xs font-bold text-slate-400 uppercase">Target Customer</span>
+                        <p class="font-medium text-sm text-teal-700 mt-1" id="lane-customer">-</p>
+                    </div>
+                    <div>
+                        <span class="text-xs font-bold text-slate-400 uppercase">Key Value</span>
+                        <p class="font-medium text-sm text-teal-700 mt-1" id="lane-value">-</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Impact Matrix: The Gap -->
+        <section class="bg-slate-50 rounded-xl p-8 border border-slate-200">
+            <h2 class="text-2xl font-bold text-slate-900 mb-6">2. The "Depth Gap" Analysis</h2>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                <!-- Chart 1: Integration Burden -->
+                <div>
+                    <div class="mb-4">
+                        <h3 class="font-bold text-lg text-slate-800">Integration Burden vs. Market fit</h3>
+                        <p class="text-xs text-slate-500">Why Tier 2s (Regional Banks) are stuck in the middle.</p>
+                    </div>
+                    <div class="chart-container bg-white p-4 rounded-xl shadow-sm border border-slate-100">
+                        <canvas id="burdenMap"></canvas>
+                    </div>
+                    <div class="mt-4 text-xs text-slate-500 italic text-center">
+                        *Y-Axis: Internal Engineering Effort Required. X-Axis: Bank Size/Complexity.
+                    </div>
+                </div>
+
+                <!-- Chart 2: Functional Completeness -->
+                <div>
+                    <div class="mb-4">
+                        <h3 class="font-bold text-lg text-slate-800">Functional Depth (Out of Box)</h3>
+                        <p class="text-xs text-slate-500">Comparing "Country Model" (Legacy) vs. "Composable".</p>
+                    </div>
+                    <div class="chart-container bg-white p-4 rounded-xl shadow-sm border border-slate-100">
+                        <canvas id="depthChart"></canvas>
+                    </div>
+                    <div class="mt-4 text-xs text-slate-500 italic text-center">
+                        *Legacy wins on Day 1 Depth. Composable wins on Day 1000 Agility.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Qualitative Deep Dives -->
+        <section class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+            <div class="lg:col-span-1 space-y-2">
+                <button
+                    class="tab-btn active w-full text-left px-6 py-4 bg-white shadow-sm rounded-lg text-slate-600 hover:bg-teal-50"
+                    onclick="switchTab('countrypacks', this)">
+                    📦 The "Country Pack"
+                </button>
+                <button
+                    class="tab-btn w-full text-left px-6 py-4 bg-white shadow-sm rounded-lg text-slate-600 hover:bg-teal-50"
+                    onclick="switchTab('tier2', this)">
+                    🏦 The Tier 2 Problem
+                </button>
+                <button
+                    class="tab-btn w-full text-left px-6 py-4 bg-white shadow-sm rounded-lg text-slate-600 hover:bg-teal-50"
+                    onclick="switchTab('ecosystem', this)">
+                    🕸️ Middleware Rise
+                </button>
+            </div>
+
+            <div class="lg:col-span-3 bg-white p-8 rounded-xl shadow-sm border border-teal-100 min-h-[400px]"
+                id="tab-content">
+                <!-- Dynamic Content -->
+            </div>
+        </section>
+
+        <!-- Player Atlas -->
+        <section>
+            <div class="flex flex-col md:flex-row justify-between items-end mb-6 border-b border-slate-200 pb-2">
+                <div>
+                    <h2 class="text-2xl font-bold text-slate-900">3. Player Atlas: Who is Pivoting?</h2>
+                    <p class="text-slate-600 mt-1 text-sm">Identifying the leaders in the "Re-bundling" race.</p>
+                </div>
+                <div class="mt-4 md:mt-0">
+                    <label class="text-xs font-bold text-slate-500 mr-2 uppercase">Strategy:</label>
+                    <select id="player-filter"
+                        class="bg-white border border-slate-300 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:border-teal-500 shadow-sm">
+                        <option value="all">All Strategies</option>
+                        <option value="Platform">Platform (Core)</option>
+                        <option value="Vertical">Vertical Solution</option>
+                        <option value="Aggregator">Ecosystem/BaaS</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="player-grid">
+                <!-- Populated by JS -->
+            </div>
+        </section>
+
+        <!-- Watchlist -->
+        <section id="watchlist" class="bg-slate-900 text-slate-100 rounded-xl p-8 shadow-lg mt-8">
+            <h2 class="text-xl font-bold mb-4 border-b border-slate-700 pb-2 flex items-center gap-2">
+                <span>🔭</span> Strategic Watchlist
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                    <h3 class="text-teal-400 text-xs font-bold uppercase mb-3 tracking-wider">Winning Signals</h3>
+                    <ul class="space-y-3 text-sm">
+                        <li class="flex gap-3">
+                            <span class="text-teal-400 font-bold">✓</span>
+                            <span><strong>Pre-Integration:</strong> Vendors announcing "Certified Adapters" for local
+                                schemes (e.g., PIX in Brazil, iDEAL in NL) maintained by the vendor, not the
+                                bank.</span>
+                        </li>
+                        <li class="flex gap-3">
+                            <span class="text-teal-400 font-bold">✓</span>
+                            <span><strong>Vertical Launches:</strong> "Mambu for SME Lending" (specific product) vs
+                                "Mambu Core" (generic platform).</span>
+                        </li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-red-400 text-xs font-bold uppercase mb-3 tracking-wider">The "Stuck in Middle" Risk
+                    </h3>
+                    <ul class="space-y-3 text-sm">
+                        <li class="flex gap-3">
+                            <span class="text-red-400 font-bold">⚠</span>
+                            <span><strong>Consultancy Dependency:</strong> If a deployment requires 2 years of
+                                Accenture/Deloitte to build basic connectors, the "Composable" advantage is lost for
+                                Tier 2s.</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <footer class="text-center text-xs text-slate-400 py-8">
+            <p>Generated for Strategic Review • Focus: Core Banking Evolution • 2025 Outlook</p>
+        </footer>
+
+    </main>
+
+    <!-- AI Chat Drawer -->
+    <div id="ai-chat-drawer"
+        class="ai-drawer fixed inset-y-0 right-0 w-full sm:w-[450px] bg-white shadow-2xl z-[60] flex flex-col border-l border-slate-200">
+        <div class="p-4 border-b border-slate-200 bg-teal-50 flex justify-between items-center">
+            <div>
+                <h3 class="font-bold text-slate-900 flex items-center gap-2">🧩 Solution Architect</h3>
+                <p class="text-xs text-slate-500">Design a Country Pack or analyze gaps.</p>
+            </div>
+            <button onclick="toggleAIChat()"
+                class="text-slate-400 hover:text-slate-600 p-2 hover:bg-slate-200 rounded-full transition">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+
+        <div id="chat-history" class="flex-1 overflow-y-auto p-4 space-y-4 bg-slate-50/50">
+            <!-- Initial Message -->
+            <div class="flex items-start gap-3">
+                <div class="bg-teal-600 p-1.5 rounded-lg text-xs text-white">AI</div>
+                <div
+                    class="bg-white border border-slate-200 p-3 rounded-2xl rounded-tl-none text-sm text-slate-800 shadow-sm">
+                    I specialize in Composable Architecture. Ask me to "Design a Country Pack for Germany" or "Explain
+                    why Tier 2 banks struggle with headless cores."
+                </div>
+            </div>
+        </div>
+
+        <div class="p-4 border-t border-slate-200 bg-white">
+            <div class="flex gap-2">
+                <input type="text" id="chat-input" placeholder="E.g., Design a Mortgage pack for UK..."
+                    class="flex-1 bg-slate-100 border-0 rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-teal-500 focus:outline-none text-slate-900 placeholder-slate-400"
+                    onkeypress="handleChatKeypress(event)">
+                <button onclick="sendChatMessage()" id="send-btn"
+                    class="bg-teal-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-teal-700 transition font-medium">
+                    Build
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for Thesis Generation -->
+    <div id="thesis-modal"
+        class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm hidden z-[70] flex items-center justify-center p-4">
+        <div
+            class="bg-white rounded-xl shadow-2xl w-full max-w-2xl max-h-[85vh] flex flex-col overflow-hidden animate-[fadeIn_0.2s_ease-out]">
+            <div class="p-4 border-b border-slate-200 flex justify-between items-center bg-teal-50">
+                <h3 class="font-bold text-lg text-teal-900" id="thesis-title">Generating Roadmap...</h3>
+                <button onclick="closeThesisModal()" class="text-slate-400 hover:text-slate-600">&times;</button>
+            </div>
+            <div class="p-8 overflow-y-auto prose prose-sm max-w-none prose-teal" id="thesis-content">
+                <div class="flex flex-col items-center justify-center py-12 space-y-4">
+                    <div class="animate-spin rounded-full h-10 w-10 border-4 border-teal-100 border-t-teal-600"></div>
+                    <p class="text-slate-500 font-medium">Analyzing market functional requirements...</p>
+                </div>
+            </div>
+            <div class="p-4 border-t border-slate-200 text-right bg-slate-50">
+                <button onclick="closeThesisModal()"
+                    class="bg-slate-800 text-white px-6 py-2 rounded-lg text-sm hover:bg-slate-700 font-medium transition">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- GEMINI API CONFIG ---
+        const apiKey = ""; // Injected by runtime
+
+        async function callGemini(prompt) {
+            if (!apiKey) {
+                console.warn("API Key not found.");
+                return "Error: API Key is missing. Please check configuration.";
+            }
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+            const payload = { contents: [{ parts: [{ text: prompt }] }] };
+
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                if (!response.ok) throw new Error(`API Error: ${response.statusText}`);
+                const data = await response.json();
+                return data.candidates?.[0]?.content?.parts?.[0]?.text || "No response generated.";
+            } catch (error) {
+                console.error("Gemini API Error:", error);
+                return "Analysis unavailable. (API Error)";
+            }
+        }
+
+        // --- DATA STORE ---
+
+        const lanes = [
+            {
+                id: 'raw',
+                title: '1. Raw Platform (2018)',
+                desc: 'The "Lego Box". Just APIs. You build the bank. Great for Neobanks with 500 engineers.',
+                customer: 'Neobanks / Fintechs',
+                value: 'Total Flexibility'
+            },
+            {
+                id: 'marketplace',
+                title: '2. Marketplace Era (2021)',
+                desc: 'The "App Store". Connectors exist, but Bank must manage the contracts and integration logic.',
+                customer: 'Tier 3 / Greenfield',
+                value: 'Vendor Choice'
+            },
+            {
+                id: 'vertical',
+                title: '3. Pre-Composed (2024)',
+                desc: 'The "Lego Kit". Vendor bundles specific partners (e.g. Core + Wise + Jumio) into a "Solution".',
+                customer: 'Tier 2 / Mid-Market',
+                value: 'Speed to Market'
+            },
+            {
+                id: 'ai',
+                title: '4. AI-Native Core (2026)',
+                desc: 'Generative localization. AI writes the glue code for local tax/reporting rules on demand.',
+                customer: 'Global Tier 1',
+                value: 'Infinite Scale'
+            }
+        ];
+
+        const players = [
+            {
+                name: 'Mambu',
+                strategy: 'Platform',
+                focus: 'Lending Engine',
+                pivot: 'Moving to "Composable Lending" specific solutions to bypass full-core replacement.',
+                readiness: 'High'
+            },
+            {
+                name: 'Thought Machine',
+                strategy: 'Platform',
+                focus: 'Tier 1 Core',
+                pivot: 'Building extensive "Smart Contract Libraries" that act as pre-built product templates.',
+                readiness: 'Medium'
+            },
+            {
+                name: 'SaaScada',
+                strategy: 'Vertical',
+                focus: 'Data-Led Core',
+                pivot: 'Born as a bundled data-core solution, easier for smaller players to digest.',
+                readiness: 'High'
+            },
+            {
+                name: 'Tuum',
+                strategy: 'Vertical',
+                focus: 'Modular Platform',
+                pivot: 'Offering specific functional modules (Cards, Lending) that can sit beside legacy.',
+                readiness: 'Medium'
+            },
+            {
+                name: 'Temenos',
+                strategy: 'Aggregator',
+                focus: 'Banking Cloud',
+                pivot: 'Unbundling their monolith into "Banking Services" to compete with pure composable.',
+                readiness: 'High'
+            },
+            {
+                name: '10x Banking',
+                strategy: 'Vertical',
+                focus: 'Super-Core',
+                pivot: 'Focusing on "Bank-in-a-box" for Tier 1 brands (like Chase UK). Less DIY, more curated.',
+                readiness: 'High'
+            }
+        ];
+
+        const tabContent = {
+            countrypacks: `
+                <div class="space-y-6 animate-fadeIn">
+                    <h3 class="text-2xl font-bold text-teal-900">The "Country Pack" Strategy</h3>
+                    <p class="text-slate-700">To win deeper markets, vendors are creating "Country Packs"—downloadable configurations that turn a generic API into a compliant local bank.</p>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="bg-slate-50 p-4 rounded border border-slate-200">
+                            <h4 class="font-bold text-slate-800 mb-2">Components of a Pack</h4>
+                            <ul class="list-disc list-inside space-y-1 text-sm text-slate-600">
+                                <li><strong>Pre-wired Integrations:</strong> e.g., Schufa for Germany credit check.</li>
+                                <li><strong>Regulatory Reporting:</strong> Automated extracts for the local regulator.</li>
+                                <li><strong>Tax Logic:</strong> Local withholding rules pre-configured.</li>
+                                <li><strong>Payment Schemes:</strong> Native connectivity to local clearing.</li>
+                            </ul>
+                        </div>
+                        <div class="bg-teal-50 p-4 rounded border border-teal-200">
+                            <h4 class="font-bold text-teal-900 mb-2">Why this wins Tier 2</h4>
+                            <p class="text-sm text-teal-800">Regional banks (Tier 2) usually buy "outcomes", not "capabilities". They want a "German Bank System", not a "Global Ledger API". Country Packs bridge this gap.</p>
+                        </div>
+                    </div>
+                </div>
+            `,
+            tier2: `
+                <div class="space-y-6 animate-fadeIn">
+                    <h3 class="text-2xl font-bold text-teal-900">The Tier 2 "Integration Cliff"</h3>
+                    <div class="bg-red-50 p-5 rounded-lg border border-red-100 text-sm">
+                        <p class="mb-2"><strong class="text-red-800">The Problem:</strong> A Tier 2 bank typically has an IT team of 50-200 people (vs 2,000+ at a Tier 1 or Neobank). They function as "Vendor Managers", not "Builders".</p>
+                        <p>When a Composable Vendor says: <em>"Here is the API, just connect it to a KYC provider,"</em> the Tier 2 CIO hears: <em>"Here is a 6-month risky project I have to staff."</em></p>
+                    </div>
+                    <p class="text-slate-700"><strong>The Solution:</strong> Pre-integrated ecosystems. The Vendor must take responsibility for the link between the Core and the KYC provider. It must work "Out of the box".</p>
+                </div>
+            `,
+            ecosystem: `
+                <div class="space-y-6 animate-fadeIn">
+                    <h3 class="text-2xl font-bold text-teal-900">Rise of the Middleware Aggregators</h3>
+                    <p class="text-slate-700">A new layer of software is emerging to fill the gap between the "Dumb Core" and the "Rich App".</p>
+                    <div class="grid grid-cols-1 gap-3">
+                        <div class="flex items-center gap-4 bg-white p-3 rounded shadow-sm border border-slate-100">
+                            <div class="bg-indigo-100 text-indigo-700 p-2 rounded font-bold text-sm">Orchestration</div>
+                            <div class="text-sm">Players like <strong>Orkes</strong> or <strong>Camunda</strong> handling the business process logic (e.g., "If loan approved, send email").</div>
+                        </div>
+                        <div class="flex items-center gap-4 bg-white p-3 rounded shadow-sm border border-slate-100">
+                            <div class="bg-indigo-100 text-indigo-700 p-2 rounded font-bold text-sm">BaaS Layers</div>
+                            <div class="text-sm">Aggregators like <strong>Unit</strong> or <strong>Solaris</strong> wrapping the core to offer a complete "Bank in a Box" API.</div>
+                        </div>
+                    </div>
+                </div>
+            `
+        };
+
+        // --- DOM MANIPULATION ---
+
+        function initLanes() {
+            const container = document.getElementById('lane-container');
+            lanes.forEach((lane, index) => {
+                const el = document.createElement('div');
+                el.className = `lane-card bg-white p-4 rounded-lg shadow-sm border border-slate-200 text-sm flex flex-col items-center justify-center h-28 text-center relative overflow-hidden ${index === 2 ? 'bg-teal-50 border-teal-200' : ''}`;
+
+                // Timeline connector
+                if (index < lanes.length - 1) {
+                    el.innerHTML += `<div class="absolute right-0 top-1/2 -mr-4 w-4 h-0.5 bg-slate-200 z-0"></div>`;
+                }
+
+                el.innerHTML += `<span class="font-bold text-slate-800 block mb-1 relative z-10">${lane.title}</span>`;
+
+                el.onclick = () => selectLane(lane, el);
+                container.appendChild(el);
+            });
+            selectLane(lanes[2], container.children[2]); // Default to "Pre-Composed"
+        }
+
+        function selectLane(lane, element) {
+            document.querySelectorAll('.lane-card').forEach(c => c.classList.remove('active'));
+            element.classList.add('active');
+
+            document.getElementById('lane-title').textContent = lane.title;
+            document.getElementById('lane-desc').textContent = lane.desc;
+            document.getElementById('lane-customer').textContent = lane.customer;
+            document.getElementById('lane-value').textContent = lane.value;
+        }
+
+        function renderPlayers(filterType = 'all') {
+            const grid = document.getElementById('player-grid');
+            grid.innerHTML = '';
+
+            const filtered = filterType === 'all' ? players : players.filter(p => p.strategy === filterType);
+
+            filtered.forEach(p => {
+                const card = document.createElement('div');
+                card.className = 'bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between h-full hover:shadow-md transition-shadow';
+
+                let badgeClass = p.strategy === 'Vertical' ? 'bg-teal-100 text-teal-700' : 'bg-slate-100 text-slate-700';
+
+                card.innerHTML = `
+                    <div>
+                        <div class="flex justify-between items-start mb-3">
+                            <h3 class="font-bold text-lg text-slate-900">${p.name}</h3>
+                            <span class="text-[10px] uppercase font-bold px-2 py-1 rounded ${badgeClass}">${p.strategy}</span>
+                        </div>
+                        <p class="text-xs text-slate-500 mb-3 font-medium uppercase tracking-wide">Focus: ${p.focus}</p>
+                        <p class="text-sm text-slate-600 mb-4 leading-relaxed">${p.pivot}</p>
+                    </div>
+                    <div class="mt-auto pt-4 border-t border-slate-100 flex justify-between items-center">
+                        <span class="text-xs font-bold text-slate-400">Readiness: ${p.readiness}</span>
+                        <button onclick="generateRoadmap('${p.name}')" class="text-xs bg-white border border-teal-200 text-teal-700 px-3 py-1.5 rounded-lg hover:bg-teal-50 transition flex items-center gap-1 shadow-sm font-medium">
+                            <span>🚀</span> Strategy
+                        </button>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function switchTab(tabId, btn) {
+            document.getElementById('tab-content').innerHTML = tabContent[tabId];
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active', 'bg-teal-50', 'text-teal-700', 'font-bold'));
+            btn.classList.add('active', 'bg-teal-50', 'text-teal-700', 'font-bold');
+        }
+
+        // --- AI LOGIC ---
+
+        function toggleAIChat() {
+            document.getElementById('ai-chat-drawer').classList.toggle('open');
+        }
+
+        function handleChatKeypress(e) {
+            if (e.key === 'Enter') sendChatMessage();
+        }
+
+        async function sendChatMessage() {
+            const input = document.getElementById('chat-input');
+            const history = document.getElementById('chat-history');
+            const query = input.value.trim();
+            if (!query) return;
+
+            // User Msg
+            history.innerHTML += `
+                <div class="flex items-start gap-3 justify-end animate-fadeIn">
+                    <div class="bg-teal-600 p-3 rounded-2xl rounded-tr-none text-sm text-white shadow-sm max-w-[85%]">
+                        ${query}
+                    </div>
+                </div>
+            `;
+            input.value = '';
+            history.scrollTop = history.scrollHeight;
+
+            // Loading
+            const loadingId = 'loading-' + Date.now();
+            history.innerHTML += `
+                <div id="${loadingId}" class="flex items-start gap-3 animate-fadeIn">
+                    <div class="bg-teal-600 p-1.5 rounded-lg text-xs text-white">AI</div>
+                    <div class="bg-white border border-slate-200 p-3 rounded-2xl rounded-tl-none text-sm text-slate-500 italic shadow-sm">
+                        Architecting solution...
+                    </div>
+                </div>
+            `;
+            history.scrollTop = history.scrollHeight;
+
+            // Context Prompt
+            const context = `
+                You are a Solution Architect for Composable Banking.
+                Topic: "The Re-bundling of Banking" - moving from raw APIs to "Country Packs".
+                Players: ${JSON.stringify(players.map(p => p.name))}
+                
+                User Question: ${query}
+                
+                If asked to "Design a pack", list:
+                1. Core Ledger (Mambu/TM)
+                2. Regulatory Module (e.g. reporting engine)
+                3. Payment Scheme (Local rail)
+                4. KYC/AML Partner
+                
+                Keep it structured and concise.
+            `;
+
+            const response = await callGemini(context);
+            document.getElementById(loadingId).remove();
+
+            history.innerHTML += `
+                <div class="flex items-start gap-3 animate-fadeIn">
+                    <div class="bg-teal-600 p-1.5 rounded-lg text-xs text-white">AI</div>
+                    <div class="bg-white border border-slate-200 p-3 rounded-2xl rounded-tl-none text-sm text-slate-800 shadow-sm prose prose-sm prose-teal">
+                        ${marked.parse(response)}
+                    </div>
+                </div>
+            `;
+            history.scrollTop = history.scrollHeight;
+        }
+
+        async function generateRoadmap(playerName) {
+            const player = players.find(p => p.name === playerName);
+            const modal = document.getElementById('thesis-modal');
+            const title = document.getElementById('thesis-title');
+            const content = document.getElementById('thesis-content');
+
+            title.textContent = `Evolution Roadmap: ${playerName}`;
+            content.innerHTML = `
+                <div class="flex flex-col items-center justify-center py-12 space-y-4">
+                    <div class="animate-spin rounded-full h-10 w-10 border-4 border-teal-100 border-t-teal-600"></div>
+                    <p class="text-slate-500 font-medium">Drafting GTM Strategy...</p>
+                </div>
+            `;
+            modal.classList.remove('hidden');
+
+            const prompt = `
+                Act as a Chief Strategy Officer for ${player.name}.
+                The goal: Move from "Raw Platform" to "Vertical Solution" to capture Tier 2 banks.
+                
+                Current Focus: ${player.focus}
+                Current Strategy: ${player.strategy}
+                
+                Generate a strategic memo (Markdown):
+                1. **The Gap**: Why Tier 2 banks aren't buying us yet.
+                2. **The "Bundle"**: What partners/features must we pre-integrate to solve this? (Name specific categories like RegTech/Payments).
+                3. **The Pitch**: How we change our sales pitch from "Flexibility" to "Certainty".
+            `;
+
+            const response = await callGemini(prompt);
+            content.innerHTML = marked.parse(response);
+        }
+
+        function closeThesisModal() {
+            document.getElementById('thesis-modal').classList.add('hidden');
+        }
+
+        // --- CHARTS ---
+
+        function initCharts() {
+            // Chart 1: Integration Burden (Scatter)
+            const ctxBurden = document.getElementById('burdenMap').getContext('2d');
+            new Chart(ctxBurden, {
+                type: 'scatter',
+                data: {
+                    datasets: [{
+                        label: 'Banks',
+                        data: [
+                            { x: 10, y: 10, name: 'Neobanks (High Talent, Low Complexity)' },
+                            { x: 90, y: 90, name: 'Tier 1 (High Talent, High Complexity)' },
+                            { x: 50, y: 80, name: 'Tier 2/3 (Low Talent, High Complexity) - THE GAP' }
+                        ],
+                        backgroundColor: '#0d9488',
+                        pointRadius: 10,
+                        pointHoverRadius: 12
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        tooltip: { callbacks: { label: ctx => ctx.raw.name } },
+                        legend: { display: false },
+                        annotation: {
+                            annotations: {
+                                box1: {
+                                    type: 'box',
+                                    xMin: 40, xMax: 60, yMin: 70, yMax: 90,
+                                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                                    label: { content: 'Danger Zone', enabled: true }
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: { title: { display: true, text: 'Bank Complexity / Size' }, min: 0, max: 100 },
+                        y: { title: { display: true, text: 'Engineering Talent Gap' }, min: 0, max: 100 }
+                    }
+                }
+            });
+
+            // Chart 2: Functional Depth (Line)
+            const ctxDepth = document.getElementById('depthChart').getContext('2d');
+            new Chart(ctxDepth, {
+                type: 'line',
+                data: {
+                    labels: ['Day 1', 'Year 1', 'Year 3', 'Year 5'],
+                    datasets: [
+                        {
+                            label: 'Legacy (Country Model)',
+                            data: [90, 92, 94, 95],
+                            borderColor: '#94a3b8',
+                            borderDash: [5, 5],
+                            tension: 0.3
+                        }, // High start, slow growth
+                        {
+                            label: 'Raw Composable',
+                            data: [10, 40, 70, 95],
+                            borderColor: '#ccfbf1',
+                            backgroundColor: '#ccfbf1',
+                            tension: 0.3
+                        }, // Low start, steep climb
+                        {
+                            label: 'Pre-Composed Pack',
+                            data: [70, 85, 95, 100],
+                            borderColor: '#0d9488',
+                            borderWidth: 3,
+                            tension: 0.3
+                        } // The Sweet Spot
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: { title: { display: true, text: '% Functional Completeness' }, min: 0, max: 100 }
+                    }
+                }
+            });
+        }
+
+        // --- INIT ---
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initLanes();
+            renderPlayers();
+            initCharts();
+            switchTab('countrypacks', document.querySelector('.tab-btn'));
+
+            document.getElementById('player-filter').addEventListener('change', (e) => {
+                renderPlayers(e.target.value);
+            });
+        });
+
+        function scrollToSection(id) {
+            document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+</body>
+
+</html>
