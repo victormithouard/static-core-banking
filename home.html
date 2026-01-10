@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Core Banking: Market Structure & Competitive Landscape</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <!-- Chosen Palette: Warm Neutrals (Stone) with Financial Blue/Slate accents -->
+    <!-- Application Structure Plan: 
+         1. Executive Overview: High-level summary at the top for immediate context.
+         2. Unit of Competition (Lanes): An interactive flow diagram. Users click 'Lanes' to understand the value chain before seeing players.
+         3. Player Atlas: A card-based grid with filters (Incumbent vs. Neo). Allows deep dive into specific companies.
+         4. Competitive Landscape (Charts): Visual comparison of positioning (Legacy vs. Cloud-Native) and financial structures.
+         5. Qualitative Deep Dives: Tabbed interface for Moats, Customer Narratives, and Regulation to reduce vertical scroll and group text-heavy content.
+    -->
+    <!-- Visualization & Content Choices:
+         - Market Positioning: Scatter Plot (Chart.js). Goal: Compare. Shows the trade-off between Install Base and Tech Modernity.
+         - Revenue Mix: Stacked Bar (Chart.js). Goal: Inform. Highlights the shift from License to SaaS.
+         - Lane Map: Styled HTML/CSS Flexbox. Goal: Change/Explain. Interactive selection updates context text. No SVG/Mermaid.
+         - Player Cards: HTML Grid. Goal: Organize. Quick scan of the competitive field.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background-color: #f5f5f4;
+            color: #1c1917;
+        }
+
+        .lane-card {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .lane-card.active {
+            border-color: #0f172a;
+            background-color: #e7e5e4;
+        }
+
+        .tab-btn {
+            transition: all 0.2s ease;
+            border-bottom: 2px solid transparent;
+        }
+
+        .tab-btn.active {
+            border-color: #0f172a;
+            color: #0f172a;
+            font-weight: 600;
+        }
+
+        .player-card {
+            transition: transform 0.2s;
+        }
+
+        .player-card:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Chart Container Styling per requirements */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+
+        /* AI Chat Drawer Styling */
+        .ai-drawer {
+            transition: transform 0.3s ease-in-out;
+            transform: translateX(100%);
+        }
+
+        .ai-drawer.open {
+            transform: translateX(0);
+        }
+
+        /* Markdown Styles for AI Response */
+        .prose p {
+            margin-bottom: 0.5em;
+        }
+
+        .prose ul {
+            list-style-type: disc;
+            padding-left: 1.25em;
+            margin-bottom: 0.5em;
+        }
+
+        .prose strong {
+            color: #0f172a;
+            font-weight: 600;
+        }
+    </style>
+</head>
+
+<body class="text-stone-800">
+
+    <!-- Header / Executive Overview -->
+    <header class="bg-stone-100 border-b border-stone-200 sticky top-0 z-50 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center">
+                <div>
+                    <h1 class="text-2xl font-bold text-stone-900 tracking-tight">CORE BANKING <span
+                            class="text-stone-500 font-light">MARKET STRUCTURE</span></h1>
+                    <p class="text-xs text-stone-500 mt-1">INVESTOR GRADE DOSSIER • 2024-2025 OUTLOOK</p>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="toggleAIChat()"
+                        class="bg-blue-600 text-white px-4 py-2 rounded text-sm hover:bg-blue-700 transition flex items-center gap-2 shadow-sm">
+                        <span>✨ AI Analyst</span>
+                    </button>
+                    <button onclick="scrollToSection('watchlist')"
+                        class="bg-stone-800 text-white px-4 py-2 rounded text-sm hover:bg-stone-700 transition">View
+                        Watchlist</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-12 relative">
+
+        <!-- Executive Summary Section -->
+        <section class="bg-white rounded-lg p-6 shadow-sm border-l-4 border-stone-800">
+            <h2 class="text-lg font-bold mb-3 uppercase tracking-wide text-stone-600">Executive Overview</h2>
+            <p class="text-stone-700 leading-relaxed mb-4">
+                The Core Banking Sector is a high-barrier <strong>oligopoly</strong> currently undergoing a "heart
+                transplant" phase. The market is bifurcating between <strong>Legacy Incumbents</strong> (FIS, Fiserv,
+                Temenos) protecting massive install bases via "hollowing out" strategies, and <strong>Cloud-Native
+                    Challengers</strong> (Mambu, Thought Machine) winning greenfield and Tier 2 modernization projects.
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                <div class="bg-stone-50 p-3 rounded">
+                    <span class="font-bold block text-stone-900">Constraint</span>
+                    Risk aversion. Replacing a core is akin to changing an engine mid-flight. Sales cycles are 18-36
+                    months.
+                </div>
+                <div class="bg-stone-50 p-3 rounded">
+                    <span class="font-bold block text-stone-900">differentiation</span>
+                    Reliability vs. Agility. Incumbents sell "No Fail"; Challengers sell "Speed to Market" and API
+                    composability.
+                </div>
+                <div class="bg-stone-50 p-3 rounded">
+                    <span class="font-bold block text-stone-900">Catalyst</span>
+                    "Hollowing out the Core"—Banks moving logic to the edge (Distribution layer), reducing the core to a
+                    dumb ledger.
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 1: The Unit of Competition (Lanes) -->
+        <section>
+            <div class="mb-4">
+                <h2 class="text-2xl font-bold text-stone-900">1. Unit of Competition</h2>
+                <p class="text-stone-600 mt-2 max-w-3xl">
+                    The value chain has unbundled. Competition is no longer "Bank vs. Bank" but specialized players in
+                    distinct lanes.
+                    Click a lane below to see the definition and key peers.
+                </p>
+            </div>
+
+            <!-- Interactive Lane Diagram -->
+            <div class="grid grid-cols-1 md:grid-cols-5 gap-2 mb-6 text-center select-none" id="lane-container">
+                <!-- Generated by JS -->
+            </div>
+
+            <div id="lane-details"
+                class="bg-white p-6 rounded-lg shadow-sm border border-stone-200 min-h-[150px] transition-all">
+                <h3 class="font-bold text-lg text-stone-900" id="lane-title">Select a Lane</h3>
+                <p class="text-stone-600 mt-2" id="lane-desc">Interact with the diagram above to analyze the competitive
+                    lanes.</p>
+                <div class="mt-4 pt-4 border-t border-stone-100">
+                    <span class="text-xs font-bold text-stone-400 uppercase">True Peers</span>
+                    <p class="font-mono text-sm text-blue-800 mt-1" id="lane-peers">-</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: Player Atlas -->
+        <section>
+            <div class="flex flex-col md:flex-row justify-between items-end mb-6 border-b border-stone-200 pb-2">
+                <div>
+                    <h2 class="text-2xl font-bold text-stone-900">2. Player Atlas</h2>
+                    <p class="text-stone-600 mt-1">Qualitative assessment of significant players.</p>
+                </div>
+                <div class="mt-4 md:mt-0 flex gap-4 items-center">
+                    <div>
+                        <label class="text-xs font-bold text-stone-500 mr-2">FILTER:</label>
+                        <select id="player-filter"
+                            class="bg-white border border-stone-300 rounded px-3 py-1 text-sm focus:outline-none focus:border-stone-500">
+                            <option value="all">All Players</option>
+                            <option value="Incumbent">Incumbents</option>
+                            <option value="Challenger">Cloud-Native / Neo</option>
+                            <option value="Service">Services / SI</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="player-grid">
+                <!-- Populated by JS -->
+            </div>
+        </section>
+
+        <!-- Section 3: Comparative Matrices (Charts) -->
+        <section class="bg-stone-50 rounded-xl p-8 border border-stone-200">
+            <h2 class="text-2xl font-bold text-stone-900 mb-6">3. Comparative Analysis</h2>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                <!-- Chart 1: Positioning -->
+                <div>
+                    <div class="mb-4">
+                        <h3 class="font-bold text-lg">Market Presence vs. Modernity</h3>
+                        <p class="text-sm text-stone-500">Visualizing the trade-off between established install base and
+                            architectural agility (Cloud-Native).</p>
+                    </div>
+                    <div class="chart-container bg-white p-2 rounded shadow-sm border border-stone-100">
+                        <canvas id="positionMap"></canvas>
+                    </div>
+                    <div class="mt-4 text-xs text-stone-500 italic text-center">
+                        *X-Axis: Qualitative "Cloud-Nativity" score. Y-Axis: Estimated Tier 1 Market Penetration.
+                    </div>
+                </div>
+
+                <!-- Chart 2: Revenue Mix -->
+                <div>
+                    <div class="mb-4">
+                        <h3 class="font-bold text-lg">Revenue Quality</h3>
+                        <p class="text-sm text-stone-500">Shift from one-time License fees (lumpy) to SaaS/Subscription
+                            (recurring).</p>
+                    </div>
+                    <div class="chart-container bg-white p-2 rounded shadow-sm border border-stone-100">
+                        <canvas id="revenueMix"></canvas>
+                    </div>
+                    <div class="mt-4 text-xs text-stone-500 italic text-center">
+                        *Based on latest available filings (FY23/24) and analyst estimates for private firms.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 4: Qualitative Deep Dive Tabs -->
+        <section>
+            <div class="flex border-b border-stone-300 mb-6 overflow-x-auto">
+                <button class="tab-btn active px-6 py-3 text-stone-600 focus:outline-none whitespace-nowrap"
+                    onclick="switchTab('moats', this)">Moats & Switching</button>
+                <button class="tab-btn px-6 py-3 text-stone-600 focus:outline-none whitespace-nowrap"
+                    onclick="switchTab('customers', this)">Customer Choice</button>
+                <button class="tab-btn px-6 py-3 text-stone-600 focus:outline-none whitespace-nowrap"
+                    onclick="switchTab('regime', this)">Regime & Catalysts</button>
+            </div>
+
+            <div id="tab-content" class="bg-white p-6 rounded-lg shadow-sm min-h-[300px]">
+                <!-- Dynamic Content Loaded Here -->
+            </div>
+        </section>
+
+        <!-- Section 5: Watchlist -->
+        <section id="watchlist" class="bg-stone-900 text-stone-100 rounded-lg p-8">
+            <h2 class="text-xl font-bold mb-4 border-b border-stone-700 pb-2">Analyst Watchlist (12-24 Month View)</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                    <h3 class="text-stone-400 text-sm font-bold uppercase mb-2">Key KPIs to Monitor</h3>
+                    <ul class="space-y-2 text-sm">
+                        <li class="flex justify-between">
+                            <span>SaaS backlog growth (Incumbents)</span>
+                            <span class="text-green-400">Target: >15% YoY</span>
+                        </li>
+                        <li class="flex justify-between">
+                            <span>Tier 1 "Core Replacement" announcements</span>
+                            <span class="text-yellow-400">Signal: Market confidence</span>
+                        </li>
+                        <li class="flex justify-between">
+                            <span>Cloud-native profitability (EBITDA)</span>
+                            <span class="text-red-400">Risk: Burn rate</span>
+                        </li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-stone-400 text-sm font-bold uppercase mb-2">Risks & Catalysts</h3>
+                    <ul class="space-y-2 text-sm">
+                        <li>⚠️ <strong>M&A Integration:</strong> Large incumbents buying fintechs often fail to
+                            integrate culture.</li>
+                        <li>🚀 <strong>AI/GenAI:</strong> Low impact on core ledger logic, high impact on customer
+                            service/distribution.</li>
+                        <li>📉 <strong>Rate Environment:</strong> High rates slow down massive capex projects (core
+                            replacements).</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <footer class="text-center text-xs text-stone-400 py-8">
+            <p>Generated for Investor Review • Sources: Public Filings, Industry Analysis • No external investment
+                advice.</p>
+        </footer>
+
+    </main>
+
+    <!-- AI Chat Drawer -->
+    <div id="ai-chat-drawer"
+        class="ai-drawer fixed inset-y-0 right-0 w-full sm:w-96 bg-white shadow-2xl z-[60] flex flex-col border-l border-stone-200">
+        <div class="p-4 border-b border-stone-200 bg-stone-50 flex justify-between items-center">
+            <div>
+                <h3 class="font-bold text-stone-900">✨ AI Sector Analyst</h3>
+                <p class="text-xs text-stone-500">Ask about players, risks, or trends.</p>
+            </div>
+            <button onclick="toggleAIChat()" class="text-stone-400 hover:text-stone-600">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+
+        <div id="chat-history" class="flex-1 overflow-y-auto p-4 space-y-4 bg-white">
+            <!-- Initial Message -->
+            <div class="flex items-start gap-3">
+                <div class="bg-blue-100 p-2 rounded-full text-xs">🤖</div>
+                <div class="bg-stone-100 p-3 rounded-lg text-sm text-stone-800">
+                    Hello! I have analyzed the Core Banking dossier. Ask me to compare players (e.g., "Temenos vs
+                    Mambu"), explain risks, or summarize the market structure.
+                </div>
+            </div>
+        </div>
+
+        <div class="p-4 border-t border-stone-200 bg-stone-50">
+            <div class="flex gap-2">
+                <input type="text" id="chat-input" placeholder="Ask a question..."
+                    class="flex-1 border border-stone-300 rounded px-3 py-2 text-sm focus:outline-none focus:border-blue-500"
+                    onkeypress="handleChatKeypress(event)">
+                <button onclick="sendChatMessage()" id="send-btn"
+                    class="bg-blue-600 text-white px-4 py-2 rounded text-sm hover:bg-blue-700 transition">
+                    Send
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for Thesis Generation -->
+    <div id="thesis-modal" class="fixed inset-0 bg-black/50 hidden z-[70] flex items-center justify-center p-4">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-2xl max-h-[80vh] flex flex-col">
+            <div class="p-4 border-b border-stone-200 flex justify-between items-center bg-stone-50 rounded-t-lg">
+                <h3 class="font-bold text-lg" id="thesis-title">Generating Thesis...</h3>
+                <button onclick="closeThesisModal()" class="text-stone-500 hover:text-stone-700">&times;</button>
+            </div>
+            <div class="p-6 overflow-y-auto prose prose-sm max-w-none" id="thesis-content">
+                <div class="flex flex-col items-center justify-center py-8 space-y-4">
+                    <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+                    <p class="text-stone-500">Analyzing moat, risks, and market position...</p>
+                </div>
+            </div>
+            <div class="p-4 border-t border-stone-200 text-right bg-stone-50 rounded-b-lg">
+                <button onclick="closeThesisModal()"
+                    class="bg-stone-800 text-white px-4 py-2 rounded text-sm hover:bg-stone-700">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- GEMINI API CONFIG ---
+        const apiKey = ""; // System will inject key at runtime
+
+        async function callGemini(prompt) {
+            if (!apiKey) {
+                console.warn("API Key not found.");
+                return "Error: API Key is missing. Please check configuration.";
+            }
+
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+
+            const payload = {
+                contents: [{
+                    parts: [{ text: prompt }]
+                }]
+            };
+
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) throw new Error(`API Error: ${response.statusText}`);
+
+                const data = await response.json();
+                return data.candidates?.[0]?.content?.parts?.[0]?.text || "No response generated.";
+            } catch (error) {
+                console.error("Gemini API Error:", error);
+                return "I encountered an error analyzing the data. Please try again.";
+            }
+        }
+
+        // --- DATA STORE ---
+
+        const lanes = [
+            {
+                id: 'upstream',
+                title: 'Upstream Inputs',
+                desc: 'Hardware, Cloud Infrastructure, and Data Centers. The physical and virtual foundation.',
+                peers: 'AWS, Microsoft Azure, Google Cloud, IBM (Mainframe z16)'
+            },
+            {
+                id: 'core',
+                title: 'Core Production',
+                desc: 'The System of Record (Ledger). Calculates interest, manages balances, processes daily posting. The "Heart".',
+                peers: 'Temenos, Mambu, Thought Machine, FIS (Modern Banking Platform), Oracle FLEXCUBE, TCS BaNCS'
+            },
+            {
+                id: 'data',
+                title: 'Data / Standards',
+                desc: 'Payment rails, Clearing houses, and Regulatory reporting standards.',
+                peers: 'SWIFT, FedNow, Visa/Mastercard networks'
+            },
+            {
+                id: 'distribution',
+                title: 'Distribution',
+                desc: 'Digital Banking Platforms (DBP), Mobile Apps, Branch systems. The "Head" (UX).',
+                peers: 'Backbase, Alkami, nCino, Temenos Infinity'
+            },
+            {
+                id: 'services',
+                title: 'Services',
+                desc: 'System Integrators (SI) and Consultants who implement these complex systems.',
+                peers: 'Accenture, Deloitte, Capgemini, Publicis Sapient'
+            }
+        ];
+
+        const players = [
+            {
+                name: 'Temenos',
+                type: 'Incumbent',
+                hq: 'Switzerland',
+                product: 'Transact (Core), Infinity (Digital)',
+                moat: 'Global scale (3000+ banks), Functional depth',
+                vuln: 'Legacy code complexity, Activist pressure',
+                customers: 'Tier 1 Global, Private Wealth',
+                pricing: 'License + Maintenance -> Shifting to Subscription'
+            },
+            {
+                name: 'Mambu',
+                type: 'Challenger',
+                hq: 'Germany/Netherlands',
+                product: 'Mambu (SaaS Core)',
+                moat: 'Pure SaaS composability, Speed to launch',
+                vuln: 'Feature gaps for complex Tier 1 lending, Burn rate',
+                customers: 'Neobanks (N26), Fintechs, Tier 2 Spinoffs',
+                pricing: 'SaaS / Consumption based'
+            },
+            {
+                name: 'FIS',
+                type: 'Incumbent',
+                hq: 'USA',
+                product: 'Modern Banking Platform, Profile',
+                moat: 'Massive US install base, Sticky relationships',
+                vuln: 'Slow innovation, Integration debt',
+                customers: 'US Large Cap, Global Tier 1',
+                pricing: 'Long-term contracts, Processing fees'
+            },
+            {
+                name: 'Thought Machine',
+                type: 'Challenger',
+                hq: 'UK',
+                product: 'Vault Core',
+                moat: 'Smart Contracts architecture, Cloud Native',
+                vuln: 'Implementation heavy, Smaller ecosystem',
+                customers: 'Lloyds, Chase UK, Standard Chartered',
+                pricing: 'License / SaaS'
+            },
+            {
+                name: 'Oracle',
+                type: 'Incumbent',
+                hq: 'USA',
+                product: 'FLEXCUBE',
+                moat: 'Full stack integration (Database + App)',
+                vuln: 'Perceived as "heavy" / expensive',
+                customers: 'Global Universal Banks',
+                pricing: 'Enterprise License'
+            },
+            {
+                name: 'Accenture',
+                type: 'Service',
+                hq: 'Ireland/Global',
+                product: 'Implementation Services',
+                moat: 'Deep trust with Boards, Risk mitigation',
+                vuln: 'Labor cost inflation',
+                customers: 'All Tiers',
+                pricing: 'Time & Materials / Fixed Price Projects'
+            }
+        ];
+
+        const tabContent = {
+            moats: `
+                <div class="space-y-4">
+                    <h3 class="text-xl font-bold text-stone-800">Moats & Switching Costs Analysis</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="bg-stone-50 p-4 rounded border border-stone-200">
+                            <h4 class="font-bold text-red-800 mb-2">High Switching Costs (The "Heart Surgery" Moat)</h4>
+                            <p class="text-sm">Replacing a core banking system is the riskiest IT project a bank can undertake. Failure can lead to license revocation. 
+                            <br><br><strong>Impact:</strong> Incumbents (FIS, Temenos) have extremely low churn (< 3%) despite lower customer satisfaction scores.</p>
+                        </div>
+                        <div class="bg-stone-50 p-4 rounded border border-stone-200">
+                            <h4 class="font-bold text-blue-800 mb-2">Regulatory Entrenchment</h4>
+                            <p class="text-sm">Systems must comply with thousands of local tax, reporting, and clearing rules. 
+                            <br><br><strong>Impact:</strong> New entrants struggle to replicate the "Country Model" functionality that players like Oracle and Temenos have built over 20 years.</p>
+                        </div>
+                    </div>
+                </div>
+            `,
+            customers: `
+                 <div class="space-y-4">
+                    <h3 class="text-xl font-bold text-stone-800">Customer Choice Drivers</h3>
+                    <table class="w-full text-sm text-left">
+                        <thead class="bg-stone-100 text-stone-600 font-bold">
+                            <tr>
+                                <th class="p-2">Customer Group</th>
+                                <th class="p-2">Primary Driver</th>
+                                <th class="p-2">Winning Vendors</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-stone-100">
+                            <tr>
+                                <td class="p-2 font-semibold">Tier 1 Global Banks</td>
+                                <td class="p-2">Reliability, Scalability, Risk Mitigation. "Don't get me fired."</td>
+                                <td class="p-2">FIS, Oracle, Thought Machine (for new brands)</td>
+                            </tr>
+                            <tr>
+                                <td class="p-2 font-semibold">Neobanks / Fintechs</td>
+                                <td class="p-2">Speed to Market, API Documentation, Low Upfront Cost.</td>
+                                <td class="p-2">Mambu, 10x, SaaScada</td>
+                            </tr>
+                            <tr>
+                                <td class="p-2 font-semibold">Regional / Credit Unions</td>
+                                <td class="p-2">"One throat to choke" (All-in-one support), Cost efficiency.</td>
+                                <td class="p-2">Jack Henry, Fiserv, nCino</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            `,
+            regime: `
+                <div class="space-y-4">
+                    <h3 class="text-xl font-bold text-stone-800">Regime, Regulation & Catalysts</h3>
+                    <ul class="list-disc list-inside space-y-2 text-sm text-stone-700">
+                        <li><strong>Open Banking (PSD2/3):</strong> Forces banks to open APIs. Favors architectures that are "API-first" (Challengers) over monolithic legacy systems.</li>
+                        <li><strong>Real-Time Payments (FedNow/SEPA Instant):</strong> Legacy batch-processing cores struggle here. Creates a catalyst for "hollowing out" the core or adding a sidecar payment engine.</li>
+                        <li><strong>Cloud Sovereignty:</strong> Regulators (GDPR, DORA) demand strict data locality. Vendors must support Multi-Cloud or dedicated local zones.</li>
+                    </ul>
+                </div>
+            `
+        };
+
+        // --- DOM MANIPULATION ---
+
+        function initLanes() {
+            const container = document.getElementById('lane-container');
+            lanes.forEach((lane, index) => {
+                const el = document.createElement('div');
+                el.className = `lane-card p-3 rounded border border-stone-300 bg-white hover:shadow-md text-sm font-bold flex items-center justify-center ${index === 1 ? 'border-blue-500 border-2' : ''}`; // Highlight Core
+                el.innerHTML = `<span>${lane.title}</span>`;
+                el.onclick = () => selectLane(lane, el);
+                container.appendChild(el);
+            });
+            // Select Core by default
+            selectLane(lanes[1], container.children[1]);
+        }
+
+        function selectLane(lane, element) {
+            document.querySelectorAll('.lane-card').forEach(c => c.classList.remove('active', 'bg-stone-800', 'text-white'));
+            element.classList.add('active', 'bg-stone-800', 'text-white');
+
+            document.getElementById('lane-title').textContent = lane.title;
+            document.getElementById('lane-desc').textContent = lane.desc;
+            document.getElementById('lane-peers').textContent = lane.peers;
+        }
+
+        function renderPlayers(filterType = 'all') {
+            const grid = document.getElementById('player-grid');
+            grid.innerHTML = '';
+
+            const filtered = filterType === 'all' ? players : players.filter(p => p.type === filterType);
+
+            filtered.forEach(p => {
+                const card = document.createElement('div');
+                card.className = 'player-card bg-white p-5 rounded border border-stone-200 shadow-sm flex flex-col justify-between';
+                const badgeColor = p.type === 'Incumbent' ? 'bg-stone-200 text-stone-800' : (p.type === 'Challenger' ? 'bg-blue-100 text-blue-800' : 'bg-orange-100 text-orange-800');
+
+                card.innerHTML = `
+                    <div>
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="font-bold text-lg text-stone-900">${p.name}</h3>
+                            <span class="text-xs px-2 py-1 rounded font-semibold ${badgeColor}">${p.type}</span>
+                        </div>
+                        <p class="text-xs text-stone-500 mb-3 uppercase tracking-wide">${p.hq} • ${p.product}</p>
+                        
+                        <div class="space-y-2 text-sm text-stone-700">
+                            <p><strong class="text-stone-900">Moat:</strong> ${p.moat}</p>
+                            <p><strong class="text-stone-900">Vuln:</strong> ${p.vuln}</p>
+                            <p class="text-xs mt-2 pt-2 border-t border-stone-100 text-stone-500">Target: ${p.customers}</p>
+                        </div>
+                    </div>
+                    <div class="mt-4 pt-4 border-t border-stone-100 flex justify-between items-center">
+                        <div class="text-xs text-stone-400">
+                           ${p.pricing.split(' ')[0]}...
+                        </div>
+                        <button onclick="generateThesis('${p.name}')" class="text-xs bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-3 py-1.5 rounded hover:from-blue-600 hover:to-indigo-700 transition flex items-center gap-1 shadow-sm">
+                            ✨ Thesis
+                        </button>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function switchTab(tabId, btn) {
+            document.getElementById('tab-content').innerHTML = tabContent[tabId];
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+        }
+
+        // --- AI LOGIC ---
+
+        function toggleAIChat() {
+            document.getElementById('ai-chat-drawer').classList.toggle('open');
+        }
+
+        function handleChatKeypress(e) {
+            if (e.key === 'Enter') sendChatMessage();
+        }
+
+        async function sendChatMessage() {
+            const input = document.getElementById('chat-input');
+            const history = document.getElementById('chat-history');
+            const query = input.value.trim();
+            if (!query) return;
+
+            // Add User Message
+            history.innerHTML += `
+                <div class="flex items-start gap-3 justify-end">
+                    <div class="bg-blue-600 p-3 rounded-lg text-sm text-white max-w-[85%]">
+                        ${query}
+                    </div>
+                    <div class="bg-stone-200 p-2 rounded-full text-xs">👤</div>
+                </div>
+            `;
+            input.value = '';
+            history.scrollTop = history.scrollHeight;
+
+            // Add Loading Indicator
+            const loadingId = 'loading-' + Date.now();
+            history.innerHTML += `
+                <div id="${loadingId}" class="flex items-start gap-3">
+                    <div class="bg-blue-100 p-2 rounded-full text-xs">🤖</div>
+                    <div class="bg-stone-100 p-3 rounded-lg text-sm text-stone-500 italic">
+                        Analyzing market data...
+                    </div>
+                </div>
+            `;
+            history.scrollTop = history.scrollHeight;
+
+            // Construct Contextual Prompt
+            const context = `
+                You are a Market Analyst for Core Banking.
+                Data Context:
+                Players: ${JSON.stringify(players)}
+                Lanes: ${JSON.stringify(lanes)}
+                Moats: "High Switching Costs", "Regulatory Entrenchment"
+                Customers: "Tier 1 banks want reliability, Fintechs want speed."
+                
+                User Question: ${query}
+                
+                Keep answer concise (under 100 words) and professional. Use formatting like **bold** for key terms.
+            `;
+
+            const response = await callGemini(context);
+
+            // Remove Loading
+            document.getElementById(loadingId).remove();
+
+            // Add AI Response
+            const formattedResponse = marked.parse(response);
+            history.innerHTML += `
+                <div class="flex items-start gap-3">
+                    <div class="bg-blue-100 p-2 rounded-full text-xs">🤖</div>
+                    <div class="bg-stone-100 p-3 rounded-lg text-sm text-stone-800 prose prose-sm">
+                        ${formattedResponse}
+                    </div>
+                </div>
+            `;
+            history.scrollTop = history.scrollHeight;
+        }
+
+        async function generateThesis(playerName) {
+            const player = players.find(p => p.name === playerName);
+            const modal = document.getElementById('thesis-modal');
+            const title = document.getElementById('thesis-title');
+            const content = document.getElementById('thesis-content');
+
+            title.textContent = `Investment Thesis: ${playerName}`;
+            content.innerHTML = `
+                <div class="flex flex-col items-center justify-center py-8 space-y-4">
+                    <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+                    <p class="text-stone-500">Generating Bull vs. Bear analysis...</p>
+                </div>
+            `;
+            modal.classList.remove('hidden');
+
+            const prompt = `
+                Act as a Senior Investment Analyst. 
+                Draft a concise investment thesis for ${player.name} in the Core Banking market.
+                
+                Data Points:
+                - Type: ${player.type}
+                - Product: ${player.product}
+                - Competitive Moat: ${player.moat}
+                - Key Vulnerability: ${player.vuln}
+                - Target Customer: ${player.customers}
+                
+                Output Format:
+                1. **Bull Case** (Why they win): 2-3 sentences highlighting their moat and market fit.
+                2. **Bear Case** (Risks): 2-3 sentences highlighting their vulnerabilities.
+                3. **Verdict**: One sentence summary.
+            `;
+
+            const response = await callGemini(prompt);
+            content.innerHTML = marked.parse(response);
+        }
+
+        function closeThesisModal() {
+            document.getElementById('thesis-modal').classList.add('hidden');
+        }
+
+        // --- CHARTS (Chart.js) ---
+
+        function initCharts() {
+            // Chart 1: Market Presence vs Modernity
+            const ctxPos = document.getElementById('positionMap').getContext('2d');
+            new Chart(ctxPos, {
+                type: 'scatter',
+                data: {
+                    datasets: [
+                        {
+                            label: 'Incumbents',
+                            data: [
+                                { x: 30, y: 90, name: 'FIS/Fiserv' },
+                                { x: 50, y: 70, name: 'Temenos' },
+                                { x: 40, y: 80, name: 'Oracle' }
+                            ],
+                            backgroundColor: '#44403c', // stone-700
+                            pointRadius: 8
+                        },
+                        {
+                            label: 'Challengers',
+                            data: [
+                                { x: 90, y: 20, name: 'Mambu' },
+                                { x: 85, y: 30, name: 'Thought Machine' },
+                                { x: 80, y: 10, name: '10x' }
+                            ],
+                            backgroundColor: '#3b82f6', // blue-500
+                            pointRadius: 8
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function (context) {
+                                    return context.raw.name + ` (Tech: ${context.raw.x}, Share: ${context.raw.y})`;
+                                }
+                            }
+                        },
+                        legend: { position: 'bottom' }
+                    },
+                    scales: {
+                        x: {
+                            title: { display: true, text: 'Tech Modernity (Cloud/API)' },
+                            min: 0, max: 100
+                        },
+                        y: {
+                            title: { display: true, text: 'Est. Market Penetration' },
+                            min: 0, max: 100
+                        }
+                    }
+                }
+            });
+
+            // Chart 2: Revenue Mix
+            const ctxRev = document.getElementById('revenueMix').getContext('2d');
+            new Chart(ctxRev, {
+                type: 'bar',
+                data: {
+                    labels: ['Temenos', 'FIS (Banking)', 'Mambu (Est)', 'Thought Machine (Est)'],
+                    datasets: [
+                        {
+                            label: 'Recurring (SaaS/Maint)',
+                            data: [60, 75, 95, 85],
+                            backgroundColor: '#0f172a', // slate-900
+                        },
+                        {
+                            label: 'License (One-off)',
+                            data: [25, 10, 0, 10],
+                            backgroundColor: '#94a3b8', // slate-400
+                        },
+                        {
+                            label: 'Services',
+                            data: [15, 15, 5, 5],
+                            backgroundColor: '#e2e8f0', // slate-200
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: { stacked: true },
+                        y: { stacked: true, max: 100, title: { display: true, text: '% of Revenue' } }
+                    },
+                    plugins: {
+                        legend: { position: 'bottom' }
+                    }
+                }
+            });
+        }
+
+        // --- INIT ---
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initLanes();
+            renderPlayers();
+            initCharts();
+            switchTab('moats', document.querySelector('.tab-btn')); // Load default tab
+
+            // Filter Event Listener
+            document.getElementById('player-filter').addEventListener('change', (e) => {
+                renderPlayers(e.target.value);
+            });
+        });
+
+        function scrollToSection(id) {
+            document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+        }
+
+    </script>
+</body>
+
+</html>
