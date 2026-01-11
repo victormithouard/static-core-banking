@@ -381,28 +381,26 @@
     </div>
 
     <script>
-        // --- GEMINI API CONFIG ---
-        const apiKey = "AIzaSyBp1756jr0QcgbDd6MNv9EZlRRYQ4-Whsk"; // Injected by runtime
+        // --- GEMINI API CLIENT ---
 
         async function callGemini(prompt) {
-            if (!apiKey) {
-                console.warn("API Key not found.");
-                return "Error: API Key is missing. Please check configuration.";
-            }
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
-            const payload = { contents: [{ parts: [{ text: prompt }] }] };
-
             try {
-                const response = await fetch(url, {
+                const response = await fetch('/api/generate', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
+                    body: JSON.stringify({ prompt })
                 });
-                if (!response.ok) throw new Error(`API Error: ${response.statusText}`);
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    console.error("API Error:", errorData);
+                    return "I encountered an error analyzing the data: " + (errorData.error || response.statusText);
+                }
+
                 const data = await response.json();
                 return data.candidates?.[0]?.content?.parts?.[0]?.text || "No response generated.";
             } catch (error) {
-                console.error("Gemini API Error:", error);
+                console.error("Client Error:", error);
                 return "Analysis unavailable. (API Error)";
             }
         }
