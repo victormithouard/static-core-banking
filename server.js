@@ -17,8 +17,8 @@ app.get('/ai', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'ai.html'));
 });
 
-app.get('/partner', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'partner.html'));
+app.get('/partners', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'partners.html'));
 });
 
 
