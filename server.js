@@ -17,6 +17,10 @@ app.get('/ai', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'ai.html'));
 });
 
+app.get('/partner', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'partner.html'));
+});
+
 
 // Helper to load .env file manually if dotenv is not present (for local dev)
 const fs = require('fs');
